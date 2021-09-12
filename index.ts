@@ -17,8 +17,6 @@ app.post("/users", async (req: Request, res: Response) => {
   const password = req.body.password;
   const role = req.body.role;
 
-  //    const newData = await getRepository(User).create({username,password,role})
-
   const result = await getRepository(User)
     .create({ username, password, role })
     .save();
@@ -33,9 +31,11 @@ createConnection({
   synchronize: true,
   logging: true,
   entities: [User],
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: process.env.PORT
+    ? {
+        rejectUnauthorized: false,
+      }
+    : null,
 })
   .then((connection) => {
     // console.log(connection);
