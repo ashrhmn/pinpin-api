@@ -1,20 +1,26 @@
 import express, { Request, Response } from 'express'
-import { createConnection } from 'typeorm'
-import client from './database'
+import { createConnection, getRepository } from 'typeorm'
+
 import User from './model/User'
 
 const app = express()
 
-app.get('/tables', (req: Request, res: Response) => {
-    client.connect()
-    client.query('SELECT table_schema,table_name FROM information_schema.tables;')
-    .then(result=>{
-        console.log(result.rows);
-        return res.json(result.rows)
-    })
-    .catch(error=>{
-        return res.json(error)
-    })
+app.use(express.json())
+
+app.get('/users', async(req: Request, res: Response) => {
+    const result = await getRepository(User).find()
+    return res.json(result)
+})
+
+app.post('/users',async(req:Request, res:Response)=>{
+    const username = req.body.username
+    const password = req.body.password
+    const role = req.body.role
+
+//    const newData = await getRepository(User).create({username,password,role})
+
+    const result = await getRepository(User).create({username,password,role}).save()
+    return res.json(result)
 })
 
 const PORT = process.env.PORT || 5000
@@ -27,7 +33,7 @@ createConnection({
     entities:[User]
 })
 .then(connection=>{
-    console.log(connection);
+    // console.log(connection);
     app.listen(PORT,() => console.log(`http://localhost:${PORT}`))    
 })
 .catch(error=>{
