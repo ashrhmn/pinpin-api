@@ -3,17 +3,21 @@ import client from './database'
 
 const app = express()
 
-app.get('/tables', (req: Request, res: Response) => {
+app.get('/tables', async(req: Request, res: Response) => {
     client.connect()
-    client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
-        if (err) throw err;
-        for (let row of res.rows) {
-            console.log(JSON.stringify(row));
-        }
-        client.end();
-    });
+    let data = null
+    // client.query('SELECT table_schema,table_name FROM information_schema.tables;', (error, result) => {
+    //     if (error) throw error;
+    //     for (let row of result.rows) {
+    //         console.log(JSON.stringify(row));
+    //     }
+    //     data = result
+    //     client.end();
+    // });
+    const {rows} = await client.query('SELECT table_schema,table_name FROM information_schema.tables;')
+    return res.json(rows)
 })
 
 const PORT = process.env.PORT || 5000
 
-app.listen(() => console.log(`http://localhost:${PORT}`))
+app.listen(PORT,() => console.log(`http://localhost:${PORT}`))
