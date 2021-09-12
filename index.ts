@@ -3,6 +3,7 @@ import { createConnection, getRepository } from "typeorm";
 import PinData from "./model/PinData";
 
 import User from "./model/User";
+import PinDataRoutes from "./routes/PinDataRoutes";
 import UserRoutes from "./routes/UserRoutes";
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 //routes
 app.use('/users',UserRoutes)
+app.use('/pinData',PinDataRoutes)
 
 const PORT = process.env.PORT || 5000;
 

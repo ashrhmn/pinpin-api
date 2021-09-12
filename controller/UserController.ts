@@ -12,11 +12,8 @@ export const getAllUser = async (req: Request, res: Response) => {
 };
 
 export const saveNewUser = async (req: Request, res: Response) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const role = req.body.role;
-
   try {
+    const { username, password, role } = req.body;
     const result = await getRepository(User)
       .create({ username, password, role })
       .save();
