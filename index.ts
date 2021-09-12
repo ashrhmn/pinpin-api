@@ -1,27 +1,16 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { createConnection, getRepository } from "typeorm";
+import PinData from "./model/PinData";
 
 import User from "./model/User";
+import UserRoutes from "./routes/UserRoutes";
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/users", async (req: Request, res: Response) => {
-  const result = await getRepository(User).find();
-  return res.json(result);
-});
-
-app.post("/users", async (req: Request, res: Response) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const role = req.body.role;
-
-  const result = await getRepository(User)
-    .create({ username, password, role })
-    .save();
-  return res.json(result);
-});
+//routes
+app.use('/users',UserRoutes)
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,7 +19,7 @@ createConnection({
   url: process.env.DATABASE_URL || "postgresql://ash:@localhost:5432/pinpin",
   synchronize: true,
   logging: true,
-  entities: [User],
+  entities: [User, PinData],
   ssl: process.env.PORT
     ? {
         rejectUnauthorized: false,
