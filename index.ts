@@ -1,19 +1,12 @@
 import express, { Request, Response } from 'express'
+import { createConnection } from 'typeorm'
 import client from './database'
+import User from './model/User'
 
 const app = express()
 
 app.get('/tables', (req: Request, res: Response) => {
     client.connect()
-    let data = null
-    // client.query('SELECT table_schema,table_name FROM information_schema.tables;', (error, result) => {
-    //     if (error) throw error;
-    //     for (let row of result.rows) {
-    //         console.log(JSON.stringify(row));
-    //     }
-    //     data = result
-    //     client.end();
-    // });
     client.query('SELECT table_schema,table_name FROM information_schema.tables;')
     .then(result=>{
         console.log(result.rows);
@@ -26,4 +19,17 @@ app.get('/tables', (req: Request, res: Response) => {
 
 const PORT = process.env.PORT || 5000
 
-app.listen(PORT,() => console.log(`http://localhost:${PORT}`))
+createConnection({
+    type:'postgres',
+    url: process.env.DATABASE_URL || "postgresql://ash:@localhost:5432/pinpin",
+    synchronize : true,
+    logging:true,
+    entities:[User]
+})
+.then(connection=>{
+    console.log(connection);
+    app.listen(PORT,() => console.log(`http://localhost:${PORT}`))    
+})
+.catch(error=>{
+    console.log(error);
+})

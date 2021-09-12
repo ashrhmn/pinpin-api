@@ -1,5 +1,7 @@
 {
-    "compilerOptions": {
-        "esModuleInterop": true
-    }
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true
+  }
 }
