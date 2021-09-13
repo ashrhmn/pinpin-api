@@ -1,9 +1,21 @@
-import { Router } from "express"
-import { getAllPinData, saveNewPinData } from "../controller/PinDataController"
-const router = Router()
+import { Router } from "express";
+import {
+  deletePinData,
+  getAllPinData,
+  getPinData,
+  saveNewPinData,
+  updatePinData,
+} from "../controller/PinDataController";
+const router = Router();
 
-router.get('/',getAllPinData)
+router.get("/", getAllPinData);
 
-router.post('/',saveNewPinData)
+router.get("/:id", getPinData);
 
-export default router
+router.post("/", saveNewPinData);
+
+router.put("/:id", updatePinData);
+
+router.delete("/:id", deletePinData);
+
+export default router;
