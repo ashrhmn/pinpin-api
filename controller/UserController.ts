@@ -26,8 +26,18 @@ export const saveNewUser = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const result = await getRepository(User).findOne(id);
-    return res.status(200).json(result);
+    const username = req.body.username;
+    if (id) {
+      const result = await getRepository(User).findOneOrFail(id);
+      return res.status(200).json(result);
+    } else if (username) {
+      const result = await getRepository(User).findOneOrFail({ username });
+      return res.status(200).json(result);
+    } else {
+      return res.status(422).json({
+        msg: `Invalid id params and or username, got username: ${username} and id: ${id}`,
+      });
+    }
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -37,13 +47,10 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     if (id) {
-      const dataExists = await getRepository(User).findOne(id);
-      if (dataExists) {
-        const result = await getRepository(User).delete(id);
-        return res.status(200).json(result);
-      } else {
-        return res.status(422).json({ msg: `Item not found for id ${id}` });
-      }
+      const result = await getRepository(User).delete(
+        await getRepository(User).findOneOrFail(id)
+      );
+      return res.status(200).json(result);
     } else {
       return res.status(422).json({ msg: `Invalid id parameter, got ${id}` });
     }
@@ -55,15 +62,15 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
-    const { username, password, role } = req.body;
-    const dataExists = await getRepository(User).findOne(id);
-    if (dataExists) {
+    if (id) {
+      const { username, password, role } = req.body;
+      const ogData = await getRepository(User).findOneOrFail(id);
       const result = await getRepository(User)
         .create({
           id,
-          username: username || dataExists.username,
-          password: password || dataExists.password,
-          role: role || dataExists.role,
+          username: username || ogData.username,
+          password: password || ogData.password,
+          role: role || ogData.role,
         })
         .save();
       return res.status(201).json(result);

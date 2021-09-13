@@ -1,8 +1,10 @@
 import express from "express";
 import { createConnection, getRepository } from "typeorm";
+import Authenticate from "./middleware/Authenticate";
 import PinData from "./model/PinData";
 
 import User from "./model/User";
+import AuthRoutes from "./routes/AuthRoutes";
 import PinDataRoutes from "./routes/PinDataRoutes";
 import UserRoutes from "./routes/UserRoutes";
 
@@ -14,11 +16,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //routes
-app.use("/users", UserRoutes);
-app.use("/pinData", PinDataRoutes);
+app.use("/auth", AuthRoutes);
+app.use("/users", Authenticate, UserRoutes);
+app.use("/pinData", Authenticate, PinDataRoutes);
 
 const PORT = process.env.PORT || 5000;
-
 
 createConnection({
   type: "postgres",

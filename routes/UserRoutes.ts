@@ -11,6 +11,8 @@ const router = Router();
 
 router.get("/", getAllUser);
 
+router.get("/username", getUser);
+
 router.get("/:id", getUser);
 
 router.post("/", saveNewUser);
