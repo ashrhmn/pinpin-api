@@ -30,6 +30,8 @@ createConnection({
 })
   .then((connection) => {
     // console.log(connection);
+    console.log(process.env);
+    
     app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
   })
   .catch((error) => {
