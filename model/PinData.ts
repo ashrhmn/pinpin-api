@@ -3,18 +3,18 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export default class PinData extends BaseEntity{
     @PrimaryGeneratedColumn()
-    id:number
+    id!:number
 
     @Column()
-    username:string
+    username!:string
 
     @Column()
-    name:string
+    name!:string
 
     @Column()
-    description:string
+    description!:string
 
     @Column()
-    secret:string
+    secret!:string
 
 }

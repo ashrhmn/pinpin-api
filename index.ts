@@ -19,6 +19,7 @@ app.use("/pinData", PinDataRoutes);
 
 const PORT = process.env.PORT || 5000;
 
+
 createConnection({
   type: "postgres",
   url:
@@ -33,7 +34,7 @@ createConnection({
       ? {
           rejectUnauthorized: false,
         }
-      : null,
+      : false,
 })
   .then(() => {
     app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
