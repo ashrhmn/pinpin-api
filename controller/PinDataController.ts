@@ -92,18 +92,6 @@ export const getPinDataById = async (req: Request, res: Response) => {
       return res.status(404).json({ msg: "Not found or Not Authenticated" });
 
     const decryptedResult = decryptPinData(result);
-    // const decryptedResult = {
-    //   id: result.id,
-    //   username: result.username,
-    //   name: result.name,
-    //   description: result.description,
-    //   secret: decrypt({ iv: result.iv, password: result.secret }) || null,
-    //   createdDate: result.createdDate,
-    //   updatedDate: result.updatedDate,
-    // };
-    // result.secret = decrypt({ iv: result.iv, password: result.secret }) || "";
-    // console.log(decryptedResult);
-
     return res.status(200).json(decryptedResult);
   } catch (error) {
     return res.status(500).json(error);
@@ -131,7 +119,8 @@ export const updatePinData = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id) || null;
     const { name, description, secret } = req.body;
 
-    if (!id) return res.status(422).json({ msg: "id in params error" });
+    if (!id)
+      return res.status(422).json({ msg: `ID error in parameter, got ${id}` });
 
     const oldData = await getRepository(PinData).findOne({ id, username });
     const encryptedSecret = encrypt(secret);
@@ -139,7 +128,7 @@ export const updatePinData = async (req: Request, res: Response) => {
     if (!oldData)
       return res
         .status(422)
-        .json({ msg: "data not found with that id or noth auth" });
+        .json({ msg: "Data not found or Not Authenticated" });
 
     const result = await getRepository(PinData)
       .create({
@@ -151,7 +140,7 @@ export const updatePinData = async (req: Request, res: Response) => {
         iv: secret ? encryptedSecret?.iv : oldData.iv,
       })
       .save();
-    return res.json(result);
+    return res.json(decryptPinData(result));
   } catch (error) {
     return res.status(500).json(error);
   }
