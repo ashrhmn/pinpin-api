@@ -81,9 +81,23 @@ export const getPinDataById = async (req: Request, res: Response) => {
     const username = getUsername(req);
     if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const id = parseInt(req.params.id);
-    const result = await getRepository(PinData).findOne({ id, username });
-    if(!result) return res.status(404).json({msg:"Not found or Not Authenticated"})
-    return res.status(200).json(result);
+    let result = await getRepository(PinData).findOne({ id, username });
+    if (!result)
+      return res.status(404).json({ msg: "Not found or Not Authenticated" });
+
+    const decryptedResult = {
+      id: result.id,
+      username: result.username,
+      name: result.name,
+      description: result.description,
+      secret: decrypt({ iv: result.iv, password: result.secret }) || null,
+      createdDate: result.createdDate,
+      updatedDate: result.updatedDate,
+    };
+    // result.secret = decrypt({ iv: result.iv, password: result.secret }) || "";
+    // console.log(decryptedResult);
+
+    return res.status(200).json(decryptedResult);
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -95,7 +109,8 @@ export const deletePinData = async (req: Request, res: Response) => {
     if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const id = parseInt(req.params.id);
     const result = await getRepository(PinData).delete({ id, username });
-    if(result.affected==0) return res.status(404).json({msg:"Not found or Not Authenticated"})
+    if (result.affected == 0)
+      return res.status(404).json({ msg: "Not found or Not Authenticated" });
     return res.status(201).json(result);
   } catch (error) {
     return res.status(500).json(error);
@@ -104,25 +119,31 @@ export const deletePinData = async (req: Request, res: Response) => {
 
 export const updatePinData = async (req: Request, res: Response) => {
   try {
+    const username = getUsername(req);
+    if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const id = parseInt(req.params.id) || null;
-    const { username, name, description, secret } = req.body;
+    const { name, description, secret } = req.body;
 
     if (id) {
-      const oldData = await getRepository(PinData).findOne({ id });
+      const oldData = await getRepository(PinData).findOne({ id, username });
+      const encryptedSecret = encrypt(secret);
       if (oldData) {
         const result = await getRepository(PinData)
           .create({
             id,
-            username: username || oldData.username,
+            username,
             name: name || oldData.name,
             description: description || oldData.description,
-            secret: secret || oldData.secret,
+            secret: secret ? encryptedSecret?.password : oldData.secret,
+            iv: secret ? encryptedSecret?.iv : oldData.iv,
           })
           .save();
         return res.json(result);
       } else {
         //data not found with that id
-        return res.status(422).json({ msg: "data not found with that id" });
+        return res
+          .status(422)
+          .json({ msg: "data not found with that id or noth auth" });
       }
     } else {
       //id in params error
