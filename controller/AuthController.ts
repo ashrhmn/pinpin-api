@@ -26,7 +26,7 @@ export const loginUser = async (req: Request, res: Response) => {
 export const signUpUser = async (req: Request, res: Response) => {
   try {
     const { username, password, role } = req.body;
-    const user = await getRepository(User).find({ username });
+    const user = await getRepository(User).findOne({ username });
     if (user) return res.status(422).json({ msg: `User already exists` });
     const encryptedPassword = await bcryptjs.hash(password, 12);
     const result = await getRepository(User)

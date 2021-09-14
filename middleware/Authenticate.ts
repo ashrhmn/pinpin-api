@@ -31,12 +31,12 @@ export const getUser = (
   hasError: boolean;
 } => {
   const token = req.header("authToken");
-  if (!token) return { result: "", hasError: true };
+  if (!token) return { result: "Access Denied", hasError: true };
   try {
     const user = <JwtPayload>jwt.verify(token, process.env.SECRET || "sshhh");
     return { result: user, hasError: false };
   } catch (error) {
-    return { result: "" + error, hasError: true };
+    return { result: "500" + error, hasError: true };
   }
 };
 
