@@ -23,6 +23,7 @@
     },
     "scripts": {
         "dev": "ts-node-dev --rs index.ts",
-        "start": "ts-node index.ts"
+        "start": "ts-node index.ts",
+        "test": "ts-node-dev --rs --respawn controller/CryptoController.ts"
     }
 }
