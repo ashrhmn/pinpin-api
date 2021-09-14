@@ -1,15 +1,15 @@
 import { Router } from "express";
 import {
   deletePinData,
+  getAllPinDataRaw,
   getAllPinData,
-  getAllPinDataForAuthUser,
   getPinDataById,
   saveNewPinData,
   updatePinData,
 } from "../controller/PinDataController";
 const router = Router();
 
-router.get("/raw", getAllPinData);
+router.get("/raw", getAllPinDataRaw);
 
 router.get("/id/:id", getPinDataById);
 
@@ -19,6 +19,6 @@ router.put("/id/:id", updatePinData);
 
 router.delete("/id/:id", deletePinData);
 
-router.get("/",getAllPinDataForAuthUser)
+router.get("/", getAllPinData);
 
 export default router;

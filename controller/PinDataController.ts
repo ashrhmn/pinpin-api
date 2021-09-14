@@ -4,15 +4,14 @@ import { getUser, getUsername } from "../middleware/Authenticate";
 import PinData from "../model/PinData";
 import { encrypt, decrypt } from "./CryptoController";
 
-export const getAllPinDataForAuthUser = async (req: Request, res: Response) => {
+export const getAllPinData = async (req: Request, res: Response) => {
   try {
-    // const { username } = req.params;
-    const username = getUsername(req)
-    
+    const username = getUsername(req);
+
     if (!username)
       return res.status(422).json({ msg: `Invalid Username, got ${username}` });
 
-    const result = await getRepository(PinData).find({ username:username });
+    const result = await getRepository(PinData).find({ username });
     console.log(result.length);
 
     const pindata: {
@@ -42,9 +41,13 @@ export const getAllPinDataForAuthUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllPinData = async (req: Request, res: Response) => {
+export const getAllPinDataRaw = async (req: Request, res: Response) => {
   try {
-    const result = await getRepository(PinData).find();
+    const username = getUsername(req);
+
+    if (!username)
+      return res.status(422).json({ msg: `Invalid Username, got ${username}` });
+    const result = await getRepository(PinData).find({ username });
     return res.status(201).json(result);
   } catch (error) {
     return res.status(500).json(error);
@@ -53,8 +56,8 @@ export const getAllPinData = async (req: Request, res: Response) => {
 
 export const saveNewPinData = async (req: Request, res: Response) => {
   try {
-    const username = getUsername(req)
-    if(!username) return res.status(422).json({msg:"Invalid Username"})
+    const username = getUsername(req);
+    if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const { id, name, description, secret } = req.body;
     const encryptedSecret = encrypt(secret);
     const result = await getRepository(PinData)
@@ -75,9 +78,12 @@ export const saveNewPinData = async (req: Request, res: Response) => {
 
 export const getPinDataById = async (req: Request, res: Response) => {
   try {
+    const username = getUsername(req);
+    if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const id = parseInt(req.params.id);
-    const result = await getRepository(PinData).find({ id });
-    return res.status(201).json(result);
+    const result = await getRepository(PinData).findOne({ id, username });
+    if(!result) return res.status(404).json({msg:"Not found or Not Authenticated"})
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -85,8 +91,11 @@ export const getPinDataById = async (req: Request, res: Response) => {
 
 export const deletePinData = async (req: Request, res: Response) => {
   try {
+    const username = getUsername(req);
+    if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const id = parseInt(req.params.id);
-    const result = await getRepository(PinData).delete(id);
+    const result = await getRepository(PinData).delete({ id, username });
+    if(result.affected==0) return res.status(404).json({msg:"Not found or Not Authenticated"})
     return res.status(201).json(result);
   } catch (error) {
     return res.status(500).json(error);
