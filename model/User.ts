@@ -12,7 +12,7 @@ export default class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ nullable: false, unique: false })
+  @Column({ nullable: false, unique: true })
   username!: string;
 
   @Column()

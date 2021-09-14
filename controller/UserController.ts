@@ -47,9 +47,8 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     if (id) {
-      const result = await getRepository(User).delete(
-        await getRepository(User).findOneOrFail(id)
-      );
+      await getRepository(User).findOneOrFail(id)
+      const result = await getRepository(User).delete(id);
       return res.status(200).json(result);
     } else {
       return res.status(422).json({ msg: `Invalid id parameter, got ${id}` });

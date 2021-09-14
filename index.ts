@@ -19,6 +19,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/auth", AuthRoutes);
 app.use("/users", Authenticate, UserRoutes);
 app.use("/pinData", Authenticate, PinDataRoutes);
+// app.use("/users", UserRoutes);
+// app.use("/pinData" , PinDataRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -2,20 +2,23 @@ import { Router } from "express";
 import {
   deletePinData,
   getAllPinData,
-  getPinData,
+  getAllPinDataForAuthUser,
+  getPinDataById,
   saveNewPinData,
   updatePinData,
 } from "../controller/PinDataController";
 const router = Router();
 
-router.get("/", getAllPinData);
+router.get("/raw", getAllPinData);
 
-router.get("/:id", getPinData);
+router.get("/id/:id", getPinDataById);
 
 router.post("/", saveNewPinData);
 
-router.put("/:id", updatePinData);
+router.put("/id/:id", updatePinData);
 
-router.delete("/:id", deletePinData);
+router.delete("/id/:id", deletePinData);
+
+router.get("/",getAllPinDataForAuthUser)
 
 export default router;

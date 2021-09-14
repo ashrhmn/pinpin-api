@@ -24,6 +24,9 @@ export default class PinData extends BaseEntity {
   @Column()
   secret!: string;
 
+  @Column()
+  iv!: string;
+
   @CreateDateColumn()
   createdDate!: Date;
 

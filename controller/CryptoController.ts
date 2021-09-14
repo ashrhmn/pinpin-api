@@ -5,7 +5,7 @@ export const secret = (userSecret: string) => {
   return (userSecret + serverSecret).substr(0, 32);
 };
 
-const encrypt = (password: string, userSecret: string = "def") => {
+export const encrypt = (password: string, userSecret: string = "def") => {
   try {
     const iv = Buffer.from(crypto.randomBytes(16));
     const cipher = crypto.createCipheriv(
@@ -52,18 +52,18 @@ export const decrypt = (
   }
 };
 
-const pass = "123456";
+// const pass = "123456";
 
-const enc = encrypt(pass);
+// const enc = encrypt(pass);
 
-if(enc){
-    console.log("Enc : ", enc.password);
-    console.log("IV : ", enc.iv);
-    try {
-      console.log("Dec : ", decrypt({ iv: enc.iv + "", password: enc.password }));
-    } catch (error) {
-      console.log(error);
-    }
-}
+// if(enc){
+//     console.log("Enc : ", enc.password);
+//     console.log("IV : ", enc.iv);
+//     try {
+//       console.log("Dec : ", decrypt({ iv: enc.iv + "", password: enc.password }));
+//     } catch (error) {
+//       console.log(error);
+//     }
+// }
 
-console.log("Cont.");
+// console.log("Cont.");
