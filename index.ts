@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //routes
 app.use("/auth", AuthRoutes);
-app.use("/users", Authenticate, UserRoutes);
+// app.use("/users", Authenticate, UserRoutes);
 app.use("/pinData", Authenticate, PinDataRoutes);
 // app.use("/users", UserRoutes);
 // app.use("/pinData" , PinDataRoutes);
