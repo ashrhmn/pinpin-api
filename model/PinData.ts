@@ -18,7 +18,7 @@ export default class PinData extends BaseEntity {
   @Column()
   name!: string;
 
-  @Column()
+  @Column({ nullable: true })
   description!: string;
 
   @Column()
