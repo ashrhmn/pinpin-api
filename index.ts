@@ -1,17 +1,19 @@
 import express from "express";
-import { createConnection, getRepository } from "typeorm";
+import { createConnection } from "typeorm";
+import cors from "cors";
+
 import Authenticate from "./middleware/Authenticate";
 import PinData from "./model/PinData";
-
 import User from "./model/User";
 import AuthRoutes from "./routes/AuthRoutes";
 import PinDataRoutes from "./routes/PinDataRoutes";
-import UserRoutes from "./routes/UserRoutes";
+// import UserRoutes from "./routes/UserRoutes";
 
 const environment = process.env.ENV_TYPE || "DEV";
 
 const app = express();
 
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
