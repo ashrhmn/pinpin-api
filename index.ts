@@ -19,18 +19,18 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//static route
-app.use(express.static(path.join(__dirname, "views")));
-app.use("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
-});
-
 //routes
 app.use("/api/auth", AuthRoutes);
 // app.use("/users", Authenticate, UserRoutes);
 app.use("/api/pinData", Authenticate, PinDataRoutes);
 // app.use("/users", UserRoutes);
 // app.use("/pinData" , PinDataRoutes);
+
+//static route
+app.use(express.static(path.join(__dirname, "views")));
+app.get("/", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"));
+});
 
 const PORT = process.env.PORT || 5000;
 
