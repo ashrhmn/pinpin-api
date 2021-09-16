@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { createConnection } from "typeorm";
 import cors from "cors";
 
@@ -9,6 +9,8 @@ import AuthRoutes from "./routes/AuthRoutes";
 import PinDataRoutes from "./routes/PinDataRoutes";
 // import UserRoutes from "./routes/UserRoutes";
 
+import path from "path";
+
 const environment = process.env.ENV_TYPE || "DEV";
 
 const app = express();
@@ -16,6 +18,12 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+//static route
+app.use(express.static(path.join(__dirname, "views")));
+app.use("/", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"));
+});
 
 //routes
 app.use("/api/auth", AuthRoutes);
