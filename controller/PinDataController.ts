@@ -33,7 +33,10 @@ export const getAllPinData = async (req: Request, res: Response) => {
     if (!username)
       return res.status(422).json({ msg: `Invalid Username, got ${username}` });
 
-    const result = await getRepository(PinData).find({ username });
+    const result = await getRepository(PinData).find({
+      where: { username },
+      order: { name: "ASC" },
+    });
     console.log(result.length);
 
     const pindata: IdecryptedPinData[] = [];
