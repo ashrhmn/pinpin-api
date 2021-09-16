@@ -28,7 +28,7 @@ app.use("/api/pinData", Authenticate, PinDataRoutes);
 
 //static route
 app.use(express.static(path.join(__dirname, "views")));
-app.get("/", (req: Request, res: Response) => {
+app.use("/", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
