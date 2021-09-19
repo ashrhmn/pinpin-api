@@ -8,10 +8,10 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
     const user = await getRepository(User).findOne({ username });
-    if (!user) return res.status(400).json({ msg: "User not found" });
+    if (!user) return res.json({ msg: "User not found" });
     const isCorrectPassword = await bcryptjs.compare(password, user.password);
     if (!isCorrectPassword)
-      return res.status(400).json({ msg: "Invalid Password" });
+      return res.json({ msg: "Invalid Password" });
 
     const token = jwt.sign(
       { username: user.username, role: user.role },
@@ -27,7 +27,7 @@ export const signUpUser = async (req: Request, res: Response) => {
   try {
     const { username, password, role } = req.body;
     const user = await getRepository(User).findOne({ username });
-    if (user) return res.status(422).json({ msg: `User already exists` });
+    if (user) return res.json({ msg: `User already exists` });
     const encryptedPassword = await bcryptjs.hash(password, 12);
     const result = await getRepository(User)
       .create({
@@ -36,7 +36,7 @@ export const signUpUser = async (req: Request, res: Response) => {
         role,
       })
       .save();
-    return res.status(201).json(result);
+    return res.status(201).json({msg:"Signup Successfull, Login to continue"});
   } catch (error) {
     return res.status(500).json(error);
   }
