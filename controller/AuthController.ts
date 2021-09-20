@@ -45,9 +45,9 @@ export const signUpUser = async (req: Request, res: Response) => {
 export const currentUser = async (req: Request, res: Response) => {
   try {
     const token = req.header("authToken");
-    if (!token) return res.status(401).json({ msg: "Not logged in" });
+    if (!token) return res.json({ msg: "Not logged in" });
     const verifiedUser = jwt.verify(token, process.env.SECRET || "sshhh");
-    if (!verifiedUser) return res.status(401).json({ msg: "Access Denied" });
+    if (!verifiedUser) return res.json({ msg: "Access Denied" });
     return res.status(200).json(verifiedUser);
   } catch (error) {
     return res.status(401).json(error);
