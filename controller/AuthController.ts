@@ -14,7 +14,7 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.json({ msg: "Invalid Password", token: null });
 
     const token = jwt.sign(
-      { username: user.username, role: user.role },
+      { username: user.username },
       process.env.SECRET || "sshhh"
     );
     return res
@@ -27,7 +27,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const signUpUser = async (req: Request, res: Response) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, email } = req.body;
     const user = await getRepository(User).findOne({ username });
     if (user) return res.json({ msg: `User already exists` });
     const encryptedPassword = await bcryptjs.hash(password, 12);
@@ -35,7 +35,7 @@ export const signUpUser = async (req: Request, res: Response) => {
       .create({
         username,
         password: encryptedPassword,
-        role,
+        email,
       })
       .save();
     return res
@@ -56,7 +56,7 @@ export const currentUser = async (req: Request, res: Response) => {
       return res.json({ msg: "Access Denied", isLoggedIn: false, user: null });
     return res
       .status(200)
-      .json({ msg: "", isLoggedIn: true, user: verifiedUser });
+      .json({ msg: "Logged In", isLoggedIn: true, user: verifiedUser });
   } catch (error) {
     return res.status(401).json(error);
   }
