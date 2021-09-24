@@ -27,7 +27,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const signUpUser = async (req: Request, res: Response) => {
   try {
-    const { username, password, email } = req.body;
+    const { username, password, email, name } = req.body;
     const user = await getRepository(User).findOne({ username });
     if (user) return res.json({ msg: `User already exists` });
     const encryptedPassword = await bcryptjs.hash(password, 12);
@@ -36,6 +36,7 @@ export const signUpUser = async (req: Request, res: Response) => {
         username,
         password: encryptedPassword,
         email,
+        name,
       })
       .save();
     return res

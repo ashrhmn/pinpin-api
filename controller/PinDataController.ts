@@ -68,6 +68,10 @@ export const saveNewPinData = async (req: Request, res: Response) => {
     const username = getUsername(req);
     if (!username) return res.status(422).json({ msg: "Invalid Username" });
     const { id, name, description, secret } = req.body;
+    if (!secret)
+      return res
+        .status(422)
+        .json({ msg: "Secret can not be empty", result: null });
     const encryptedSecret = encrypt(secret);
     const result = await getRepository(PinData)
       .create({
@@ -79,7 +83,7 @@ export const saveNewPinData = async (req: Request, res: Response) => {
         iv: encryptedSecret?.iv,
       })
       .save();
-    return res.status(201).json(result);
+    return res.status(201).json({ msg: "Added successfully", result });
   } catch (error) {
     return res.status(500).json(error);
   }
