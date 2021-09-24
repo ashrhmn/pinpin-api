@@ -141,10 +141,10 @@ export const updatePinData = async (req: Request, res: Response) => {
       .create({
         id,
         username,
-        name: name || oldData.name,
-        description: description || oldData.description,
-        secret: secret ? encryptedSecret?.password : oldData.secret,
-        iv: secret ? encryptedSecret?.iv : oldData.iv,
+        name: name,
+        description: description,
+        secret: encryptedSecret?.password,
+        iv: encryptedSecret?.iv,
       })
       .save();
     return res.json(decryptPinData(result));
@@ -152,3 +152,37 @@ export const updatePinData = async (req: Request, res: Response) => {
     return res.status(500).json(error);
   }
 };
+
+// export const updatePinData2 = async (req: Request, res: Response) => {
+//   try {
+//     const username = getUsername(req);
+//     if (!username) return res.status(422).json({ msg: "Invalid Username" });
+//     const id = parseInt(req.params.id) || null;
+//     const { name, description, secret } = req.body;
+
+//     if (!id)
+//       return res.status(422).json({ msg: `ID error in parameter, got ${id}` });
+
+//     const oldData = await getRepository(PinData).findOne({ id, username });
+//     const encryptedSecret = encrypt(secret);
+
+//     if (!oldData)
+//       return res
+//         .status(422)
+//         .json({ msg: "Data not found or Not Authenticated" });
+
+//     const result = await getRepository(PinData)
+//       .create({
+//         id,
+//         username,
+//         name: name || oldData.name,
+//         description: description || oldData.description,
+//         secret: secret ? encryptedSecret?.password : oldData.secret,
+//         iv: secret ? encryptedSecret?.iv : oldData.iv,
+//       })
+//       .save();
+//     return res.json(decryptPinData(result));
+//   } catch (error) {
+//     return res.status(500).json(error);
+//   }
+// };
