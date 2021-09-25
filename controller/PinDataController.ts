@@ -153,6 +153,47 @@ export const updatePinData = async (req: Request, res: Response) => {
   }
 };
 
+
+export const toogleFavourite = async (req: Request, res: Response) => {
+  try {
+    const username = getUsername(req)
+    if (!username) return res.status(422).json({ msg: "Invalid Username" });
+    const id = parseInt(req.params.id) || null
+    if (!id) return res.status(422).json({ msg: `ID error in parameter, got ${id}` })
+
+    const data = await getRepository(PinData).findOne({ id, username })
+    if (!data) return res.status(422).json({ msg: 'Data not found or not authorized' })
+
+    const result = await getRepository(PinData).update(id, { ...data, isFavourite: !data.isFavourite })
+
+    return res.status(201).json({ msg: `PinData ${data.isFavourite ? 'removed from favourites' : 'set as favourite'} successfully`, result })
+
+
+  } catch (error) {
+    return res.status(500).json({ error, msg: 'Internal server error' })
+  }
+}
+
+
+export const toogleTrashed = async (req: Request, res: Response) => {
+  try {
+    const username = getUsername(req)
+    if (!username) return res.status(422).json({ msg: "Invalid Username" });
+    const id = parseInt(req.params.id) || null
+    if (!id) return res.status(422).json({ msg: `ID error in parameter, got ${id}` })
+
+    const data = await getRepository(PinData).findOne({ id, username })
+    if (!data) return res.status(422).json({ msg: 'Data not found or not authorized' })
+
+    const result = await getRepository(PinData).update(id, { ...data, isTrashed: !data.isTrashed })
+
+    return res.status(201).json({ msg: `PinData ${data.isTrashed ? 'restored from' : 'moved to'} trash set as favourite successfully`, result })
+
+  } catch (error) {
+    return res.status(500).json({ error, msg: 'Internal server error' })
+  }
+}
+
 // export const updatePinData2 = async (req: Request, res: Response) => {
 //   try {
 //     const username = getUsername(req);

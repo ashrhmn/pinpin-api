@@ -40,7 +40,7 @@ createConnection({
   url:
     environment != "DEV"
       ? process.env.DATABASE_URL
-      : "postgresql://ash:@localhost:5432/pinpin",
+      : "postgresql://ash:postgres@localhost:5432/pinpin",
   synchronize: true,
   logging: true,
   entities: [User, PinData],

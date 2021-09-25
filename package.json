@@ -24,7 +24,7 @@
         "ts-node-dev": "^1.1.8"
     },
     "scripts": {
-        "dev": "ts-node-dev --rs index.ts",
+        "dev": "ts-node-dev --rs --respawn index.ts",
         "start": "ts-node index.ts",
         "test": "ts-node-dev --rs --respawn controller/CryptoController.ts"
     }

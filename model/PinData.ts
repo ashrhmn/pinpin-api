@@ -27,6 +27,12 @@ export default class PinData extends BaseEntity {
   @Column()
   iv!: string;
 
+  @Column({ nullable: false, default: false })
+  isFavourite!: boolean
+
+  @Column({ nullable: false, default: false })
+  isTrashed!: boolean
+
   @CreateDateColumn()
   createdDate!: Date;
 
