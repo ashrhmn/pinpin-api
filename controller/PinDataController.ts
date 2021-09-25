@@ -10,6 +10,8 @@ interface IdecryptedPinData {
   name: string;
   description: string;
   secret: string | null;
+  isFavourite: boolean;
+  isTrashed: boolean;
   createdDate: Date;
   updatedDate: Date;
 }
@@ -21,10 +23,16 @@ const decryptPinData = (enc: PinData): IdecryptedPinData => {
     name: enc.name,
     description: enc.description,
     secret: decrypt({ iv: enc.iv, password: enc.secret }) || null,
+    isFavourite: enc.isFavourite,
+    isTrashed: enc.isTrashed,
     createdDate: enc.createdDate,
     updatedDate: enc.updatedDate,
   };
 };
+
+// const decryptPinData = (enc: PinData): IdecryptedPinData => {
+//   return { ...enc, secret: decrypt({ iv: enc.iv, password: enc.secret }) || null }
+// };
 
 export const getAllPinData = async (req: Request, res: Response) => {
   try {
@@ -35,7 +43,7 @@ export const getAllPinData = async (req: Request, res: Response) => {
 
     const result = await getRepository(PinData).find({
       where: { username },
-      order: { name: "ASC" },
+      order: { isFavourite: 'DESC', name: "ASC" },
     });
     console.log(result.length);
 
@@ -187,7 +195,7 @@ export const toogleTrashed = async (req: Request, res: Response) => {
 
     const result = await getRepository(PinData).update(id, { ...data, isTrashed: !data.isTrashed })
 
-    return res.status(201).json({ msg: `PinData ${data.isTrashed ? 'restored from' : 'moved to'} trash set as favourite successfully`, result })
+    return res.status(201).json({ msg: `PinData ${data.isTrashed ? 'restored from' : 'moved to'} trash successfully`, result })
 
   } catch (error) {
     return res.status(500).json({ error, msg: 'Internal server error' })
