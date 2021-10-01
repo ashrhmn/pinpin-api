@@ -8,6 +8,7 @@ import {
   updatePinData,
   toogleFavourite,
   toogleTrashed,
+  getAllPinDataTrashed,
 } from "../controller/PinDataController";
 const router = Router();
 
@@ -26,5 +27,7 @@ router.put("/toogleTrashed/:id", toogleTrashed);
 router.delete("/id/:id", deletePinData);
 
 router.get("/", getAllPinData);
+
+router.get("/bin/", getAllPinDataTrashed);
 
 export default router;
